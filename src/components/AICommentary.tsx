@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Sparkles, Volume2, VolumeX } from "lucide-react";
+import { ttsService } from "@/lib/tts";
 
 interface CommentaryMessage {
   id: number;
@@ -37,13 +38,42 @@ const typeIcons = {
 
 export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(true); // 默认关闭语音
+  const lastMessageIdRef = useRef<number>(0);
 
+  // 自动滚动到底部
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // 播放新消息的语音
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const latestMessage = messages[messages.length - 1];
+
+    // 只播放新消息
+    if (latestMessage.id > lastMessageIdRef.current) {
+      lastMessageIdRef.current = latestMessage.id;
+
+      if (!isMuted) {
+        ttsService.speak(latestMessage.text);
+      }
+    }
+  }, [messages, isMuted]);
+
+  // 切换静音状态
+  const toggleMute = () => {
+    if (isMuted) {
+      ttsService.enable();
+      setIsMuted(false);
+    } else {
+      ttsService.disable();
+      setIsMuted(true);
+    }
+  };
 
   return (
     <div className="glass-panel neon-border h-full flex flex-col">
@@ -66,8 +96,16 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
           </div>
         </div>
         <button
-          onClick={() => setIsMuted(!isMuted)}
-          className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
+          onClick={toggleMute}
+          className="p-2 rounded-lg hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!ttsService.isSupported()}
+          title={
+            !ttsService.isSupported()
+              ? "浏览器不支持语音合成"
+              : isMuted
+                ? "开启语音解说"
+                : "关闭语音解说"
+          }
         >
           {isMuted ? (
             <VolumeX className="w-4 h-4 text-muted-foreground" />
@@ -95,7 +133,9 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
               <div className="flex items-start gap-2">
                 <span className="text-lg">{typeIcons[msg.type]}</span>
                 <div className="flex-1">
-                  <p className={`text-sm leading-relaxed ${typeColors[msg.type]}`}>
+                  <p
+                    className={`text-sm leading-relaxed ${typeColors[msg.type]}`}
+                  >
                     {msg.text}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -128,7 +168,9 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
                 />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground">AI 正在分析...</span>
+            <span className="text-xs text-muted-foreground">
+              AI 正在分析...
+            </span>
           </motion.div>
         )}
       </div>
