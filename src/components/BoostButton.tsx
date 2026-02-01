@@ -20,13 +20,13 @@ export const BoostButton = ({ racer, onBoost, disabled }: BoostButtonProps) => {
 
   return (
     <motion.div
-      className="glass-panel neon-border p-4"
+      className="retro-card pixel-corners p-4"
       whileHover={{ scale: 1.01 }}
     >
       <div className="flex items-center gap-2 mb-4">
         <Rocket className="w-5 h-5" style={{ color: racer.color }} />
-        <h3 className="font-display text-sm font-bold">
-          支持 <span style={{ color: racer.color }}>{racer.symbol}</span>
+        <h3 className="font-pixel text-[10px] uppercase">
+          BOOST <span style={{ color: racer.color }}>{racer.symbol}</span>
         </h3>
       </div>
 
@@ -36,13 +36,15 @@ export const BoostButton = ({ racer, onBoost, disabled }: BoostButtonProps) => {
           <button
             key={preset}
             onClick={() => setAmount(preset)}
-            className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+            className={`py-2 px-3 border-2 text-lg font-game transition-all rounded-none ${
               amount === preset
-                ? 'text-background'
-                : 'bg-muted hover:bg-muted/80 text-foreground'
+                ? "text-background border-current"
+                : "bg-muted hover:bg-muted/80 text-foreground border-white/20"
             }`}
             style={{
               background: amount === preset ? racer.color : undefined,
+              borderColor: amount === preset ? racer.color : undefined,
+              imageRendering: "pixelated",
             }}
           >
             ${preset}
@@ -52,12 +54,14 @@ export const BoostButton = ({ racer, onBoost, disabled }: BoostButtonProps) => {
 
       {/* Custom amount input */}
       <div className="relative mb-4">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+          $
+        </span>
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
-          className="w-full bg-muted/50 border border-border rounded-lg py-2 pl-8 pr-4 font-display text-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className="w-full bg-black/40 border border-white/20 py-2 pl-8 pr-4 font-game text-2xl focus:outline-none focus:ring-1 focus:ring-primary/50 rounded-none text-white"
         />
       </div>
 
@@ -67,34 +71,34 @@ export const BoostButton = ({ racer, onBoost, disabled }: BoostButtonProps) => {
         onHoverEnd={() => setIsHovered(false)}
         onClick={() => onBoost(amount)}
         disabled={disabled}
-        className="w-full relative overflow-hidden rounded-xl py-4 font-display font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="pixel-button w-full relative overflow-hidden py-4 font-pixel text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase rounded-none border-2"
         style={{
           background: `linear-gradient(135deg, ${racer.color}, ${racer.color}cc)`,
-          boxShadow: isHovered 
-            ? `0 0 30px ${racer.color}80, 0 0 60px ${racer.color}40`
-            : `0 0 15px ${racer.color}50`,
-          color: 'hsl(var(--background))',
+          color: "hsl(var(--background))",
+          borderColor: racer.color,
         }}
-        whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         {/* Shimmer effect */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-          initial={{ x: '-100%' }}
-          animate={isHovered ? { x: '100%' } : { x: '-100%' }}
+          initial={{ x: "-100%" }}
+          animate={isHovered ? { x: "100%" } : { x: "-100%" }}
           transition={{ duration: 0.6 }}
         />
-        
-        <span className="relative flex items-center justify-center gap-2">
-          <Zap className="w-5 h-5" />
+
+        <span className="relative flex items-center justify-center gap-2 font-bold text-gray-50 drop-shadow-md">
+          <Zap className="w-4 h-4" />
           BOOST ${amount}
         </span>
       </motion.button>
 
       {/* Potential return */}
-      <p className="text-center text-xs text-muted-foreground mt-3">
-        预计回报: <span className="text-neon-green font-medium">${(amount * 1.85).toFixed(2)}</span>
+      <p className="text-center text-sm text-muted-foreground mt-3 font-game uppercase">
+        RETURN:{" "}
+        <span className="text-retro-orange text-base font-bold">
+          ${(amount * 1.85).toFixed(2)}
+        </span>
       </p>
     </motion.div>
   );
