@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useAccount, useSendTransaction } from "wagmi";
+import { parseEther } from "viem";
+import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { RaceTrack } from "@/components/RaceTrack";
 import { AICommentary } from "@/components/AICommentary";
@@ -55,11 +58,55 @@ const RACES = [
 ];
 
 const Index = () => {
-  const [isConnected, setIsConnected] = useState(false);
+  const { isConnected } = useAccount();
   const [selectedRace, setSelectedRace] = useState("btc-eth");
+  const { toast } = useToast();
+  const { sendTransactionAsync } = useSendTransaction();
 
-  const { racer1Data, racer2Data, commentary, isTyping, handleBoost } =
-    useRaceSimulation();
+  const {
+    racer1Data,
+    racer2Data,
+    commentary,
+    isTyping,
+    handleBoost: simulateBoost,
+  } = useRaceSimulation();
+
+  const handleBoostClick = async (symbol: string, amount: number) => {
+    if (!isConnected) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to boost!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Mapping: $50 boost = 0.001 POL (for testing purposes)
+      // 0.001 / 50 = 0.00002 factor
+      const polAmount = (amount * 0.00002).toFixed(6);
+
+      await sendTransactionAsync({
+        to: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F", // Game Treasury
+        value: parseEther(polAmount),
+      });
+
+      toast({
+        title: "🚀 Boost Activated!",
+        description: `You boosted ${symbol} with ${amount} points!`,
+        className: "font-mono border-2 border-primary",
+      });
+
+      simulateBoost(symbol, amount);
+    } catch (error) {
+      console.error("Boost failed:", error);
+      toast({
+        title: "Boost Failed",
+        description: "Transaction was rejected or failed.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const currentRace = RACES.find((r) => r.id === selectedRace)!;
 
@@ -100,11 +147,7 @@ const Index = () => {
         />
       </div>
 
-      <Header
-        isConnected={isConnected}
-        walletAddress="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
-        onConnect={() => setIsConnected(true)}
-      />
+      <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-4 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -143,7 +186,7 @@ const Index = () => {
                   symbol: racer1.symbol,
                   color: racer1.color,
                 }}
-                onBoost={(amount) => handleBoost(racer1.symbol, amount)}
+                onBoost={(amount) => handleBoostClick(racer1.symbol, amount)}
                 disabled={!isConnected}
               />
               <BoostButton
@@ -152,7 +195,7 @@ const Index = () => {
                   symbol: racer2.symbol,
                   color: racer2.color,
                 }}
-                onBoost={(amount) => handleBoost(racer2.symbol, amount)}
+                onBoost={(amount) => handleBoostClick(racer2.symbol, amount)}
                 disabled={!isConnected}
               />
             </div>
