@@ -342,8 +342,8 @@ export class SmartTTS {
 
     // 清理emoji和特殊字符，只保留文字
     const cleanText = text
-      .replace(/[\u{1F300}-\u{1F9FF}]/gu, "") // 移除emoji
-      .replace(/[⚡🚀💪📈📉⚠️🐻💔🔻📊⏳🤔📡🎯🎪💥🏁🔔]/g, "")
+      .replace(/[\u{1F300}-\u{1F9FF}]/gu, "") // 移除所有emoji
+      .replace(/[\u26A1\u26A0\u23F3]/gu, "") // 移除常用符号
       .trim();
 
     if (!cleanText) return;
@@ -375,9 +375,11 @@ export class SmartTTS {
         // 浏览器TTS需要等待播放完成
         await this.waitForSpeech();
       } else {
-        const audio = await (this.tts as any).speak(text);
-        await new Promise((resolve) => {
-          audio.onended = resolve;
+        const audio = await (
+          this.tts as GoogleTTS | AzureTTS | ElevenLabsTTS
+        ).speak(text);
+        await new Promise<void>((resolve) => {
+          audio.onended = () => resolve();
         });
       }
     } catch (error) {

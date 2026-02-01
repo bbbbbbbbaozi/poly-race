@@ -1,6 +1,14 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, Volume2, VolumeX } from "lucide-react";
+import {
+  Sparkles,
+  Volume2,
+  VolumeX,
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  Zap,
+} from "lucide-react";
 import { ttsService } from "@/lib/tts";
 
 interface CommentaryMessage {
@@ -13,30 +21,35 @@ interface CommentaryMessage {
 interface AICommentaryProps {
   messages: CommentaryMessage[];
   isTyping?: boolean;
+  className?: string;
 }
 
 const typeColors = {
   neutral: "text-foreground",
-  bullish: "text-neon-green",
+  bullish: "text-neon-orange",
   bearish: "text-destructive",
-  alert: "text-neon-gold",
+  alert: "text-neon-purple",
 };
 
 const typeBg = {
   neutral: "bg-muted/30",
-  bullish: "bg-neon-green/10",
+  bullish: "bg-retro-orange/10",
   bearish: "bg-destructive/10",
-  alert: "bg-neon-gold/10",
+  alert: "bg-retro-purple/10",
 };
 
 const typeIcons = {
-  neutral: "📊",
-  bullish: "🚀",
-  bearish: "📉",
-  alert: "⚡",
+  neutral: BarChart3,
+  bullish: TrendingUp,
+  bearish: TrendingDown,
+  alert: Zap,
 };
 
-export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
+export const AICommentary = ({
+  messages,
+  isTyping,
+  className = "",
+}: AICommentaryProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isMuted, setIsMuted] = useState(true); // 默认关闭语音
   const lastMessageIdRef = useRef<number>(0);
@@ -76,28 +89,38 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
   };
 
   return (
-    <div className="glass-panel neon-border h-full flex flex-col">
+    <div
+      className={`retro-card pixel-corners flex flex-col h-full ${className}`}
+    >
       {/* Header */}
-      <div className="p-4 border-b border-border/50 flex items-center justify-between">
+      <div className="p-4 border-b border-white/10 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative">
             <motion.div
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-magenta flex items-center justify-center"
+              className="w-10 h-10 border-2 bg-gradient-to-br from-retro-cyan to-retro-orange flex items-center justify-center"
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
+              style={{ imageRendering: "pixelated" }}
             >
-              <Sparkles className="w-5 h-5 text-background" />
+              <Sparkles className="w-5 h-5 text-black" />
             </motion.div>
-            <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-neon-green rounded-full border-2 border-background" />
+            <span
+              className="absolute -bottom-1 -right-1 w-3 h-3 bg-retro-orange border-2 border-black"
+              style={{ imageRendering: "pixelated" }}
+            />
           </div>
           <div>
-            <h3 className="font-display font-bold text-sm">AI VIBE 解说员</h3>
-            <p className="text-xs text-muted-foreground">华尔街毒舌 Mode</p>
+            <h3 className="font-pixel text-[10px] uppercase text-retro-cyan">
+              AI COMMENTATOR
+            </h3>
+            <p className="text-[8px] text-muted-foreground font-game uppercase">
+              LIVE MODE
+            </p>
           </div>
         </div>
         <button
           onClick={toggleMute}
-          className="p-2 rounded-lg hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent hover:border-white/20"
           disabled={!ttsService.isSupported()}
           title={
             !ttsService.isSupported()
@@ -110,7 +133,7 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
           {isMuted ? (
             <VolumeX className="w-4 h-4 text-muted-foreground" />
           ) : (
-            <Volume2 className="w-4 h-4 text-primary" />
+            <Volume2 className="w-4 h-4 text-retro-cyan" />
           )}
         </button>
       </div>
@@ -128,17 +151,27 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
-              className={`p-3 rounded-lg ${typeBg[msg.type]} border border-border/30`}
+              className={`p-3 border ${typeBg[msg.type]} border-white/10`}
             >
               <div className="flex items-start gap-2">
-                <span className="text-lg">{typeIcons[msg.type]}</span>
+                {(() => {
+                  const IconComponent = typeIcons[msg.type];
+                  return (
+                    <IconComponent
+                      className="w-5 h-5 mt-0.5"
+                      style={{
+                        color: `hsl(var(--${msg.type === "neutral" ? "muted-foreground" : msg.type === "bullish" ? "retro-orange" : msg.type === "bearish" ? "destructive" : "retro-purple"}))`,
+                      }}
+                    />
+                  );
+                })()}
                 <div className="flex-1">
                   <p
-                    className={`text-sm leading-relaxed ${typeColors[msg.type]}`}
+                    className={`text-sm font-game leading-relaxed ${typeColors[msg.type]}`}
                   >
                     {msg.text}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] text-muted-foreground mt-1 font-game">
                     {msg.timestamp.toLocaleTimeString()}
                   </p>
                 </div>
@@ -158,7 +191,8 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-2 h-2 rounded-full bg-primary"
+                  className="w-2 h-2 bg-retro-purple"
+                  style={{ imageRendering: "pixelated" }}
                   animate={{ y: [0, -6, 0] }}
                   transition={{
                     duration: 0.6,
@@ -168,8 +202,8 @@ export const AICommentary = ({ messages, isTyping }: AICommentaryProps) => {
                 />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground">
-              AI 正在分析...
+            <span className="text-[10px] text-muted-foreground font-game uppercase">
+              ANALYZING...
             </span>
           </motion.div>
         )}

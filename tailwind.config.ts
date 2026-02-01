@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -14,72 +19,81 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Orbitron', 'sans-serif'],
-        body: ['Space Grotesk', 'sans-serif'],
+        pixel: ['"Press Start 2P"', "cursive"],
+        mono: ['"Share Tech Mono"', "monospace"],
+        vt: ['"VT323"', "monospace"],
+        // Fallbacks for existing standard classes
+        display: ['"Press Start 2P"', "cursive"],
+        body: ['"Share Tech Mono"', "monospace"],
+        game: ['"VT323"', "monospace"],
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "rgba(255, 255, 255, 0.1)",
+        input: "rgba(30, 30, 30, 0.85)",
+        ring: "#6B2EC7",
+        background: "#000000",
+        foreground: "#FFFFFF",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#6B2EC7",
+          foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "rgba(255, 255, 255, 0.1)",
+          foreground: "#B8B8B8",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#E63946",
+          foreground: "#FFFFFF",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "rgba(40, 40, 40, 0.9)",
+          foreground: "#B8B8B8",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#00D9FF",
+          foreground: "#FFFFFF",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "rgba(30, 30, 30, 0.85)",
+          foreground: "#FFFFFF",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "rgba(30, 30, 30, 0.85)",
+          foreground: "#FFFFFF",
         },
-        neon: {
-          cyan: "hsl(var(--neon-cyan))",
-          magenta: "hsl(var(--neon-magenta))",
-          gold: "hsl(var(--neon-gold))",
-          green: "hsl(var(--neon-green))",
-          orange: "hsl(var(--neon-orange))",
-          purple: "hsl(var(--neon-purple))",
+        // Retro Block Specific
+        retro: {
+          bg: "#000000",
+          bgSecondary: "#0a0a0a",
+          card: "rgba(30, 30, 30, 0.85)",
+          cardHover: "rgba(40, 40, 40, 0.9)",
+          orange: "#FF6B35",
+          orangeDark: "#E63946",
+          purple: "#6B2EC7",
+          purpleDark: "#4A1C8C",
+          cyan: "#00D9FF",
+          cyanGlow: "#00F0FF",
+          text: "#FFFFFF",
+          textSec: "#B8B8B8",
+          border: "rgba(255, 255, 255, 0.1)",
         },
-        token: {
-          btc: "hsl(var(--token-btc))",
-          eth: "hsl(var(--token-eth))",
-          sol: "hsl(var(--token-sol))",
-          gold: "hsl(var(--token-gold))",
-        },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
+        // Compatibility Mappings
+        "turtle-blue": "#00D9FF", // Map to Cyan for old classes
+        "rabbit-green": "#FF6B35", // Map to Orange for old classes (VS concept: Green vs Orange/Purple)
+        "versus-purple": "#6B2EC7",
+        "neon-green": "#00D9FF",
+        "neon-gold": "#FF6B35",
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      backgroundImage: {
+        "pixel-gradient": "linear-gradient(135deg, #000000 0%, #1a1a1a 100%)",
+        "primary-gradient": "linear-gradient(135deg, #6B2EC7 0%, #4A1C8C 100%)",
+        "primary-gradient-hover":
+          "linear-gradient(135deg, #8B4EE7 0%, #6B2EC7 100%)",
+      },
+      boxShadow: {
+        "glow-cyan": "0 0 20px rgba(0, 217, 255, 0.5)",
+        "glow-orange": "0 0 30px rgba(255, 107, 53, 0.6)",
+        "glow-purple": "0 0 20px rgba(107, 46, 199, 0.6)",
       },
       keyframes: {
         "accordion-down": {
@@ -90,36 +104,21 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "pulse-neon": {
-          "0%, 100%": { 
-            opacity: "1",
-            boxShadow: "0 0 20px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.3)"
-          },
-          "50%": { 
-            opacity: "0.8",
-            boxShadow: "0 0 30px hsl(var(--primary) / 0.7), 0 0 60px hsl(var(--primary) / 0.5)"
-          },
+        scanlineScroll: {
+          "0%": { backgroundPosition: "0 0" },
+          "100%": { backgroundPosition: "0 100%" },
         },
-        "race-progress": {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(var(--race-position))" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
+        raceShake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "25%": { transform: "translateX(-1px)" },
+          "75%": { transform: "translateX(1px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-neon": "pulse-neon 2s ease-in-out infinite",
-        "race-progress": "race-progress 0.5s ease-out forwards",
-        shimmer: "shimmer 2s linear infinite",
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-race": "var(--gradient-race)",
-        "grid-pattern": "linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px)",
+        scanline: "scanlineScroll 2s linear infinite",
+        "race-shake": "raceShake 0.5s infinite",
       },
     },
   },

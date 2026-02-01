@@ -20,7 +20,7 @@ export const Header = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-border/50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <motion.div
@@ -29,46 +29,45 @@ export const Header = ({
           animate={{ opacity: 1, x: 0 }}
         >
           <motion.div
-            className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden"
+            className="w-10 h-10 flex items-center justify-center overflow-hidden"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           >
             <img
               src="/logo.png"
-              alt="PolyRace"
+              alt="PolyRace Logo"
               className="w-full h-full object-contain"
             />
           </motion.div>
           <div>
-            <h1 className="font-display text-lg font-black tracking-wider">
-              <span className="text-glow-cyan">POLY</span>
-              <span className="text-glow-magenta">RACE</span>
+            <h1 className="font-pixel text-lg text-white tracking-normal">
+              POLYRACE
             </h1>
-            <p className="text-[10px] text-muted-foreground -mt-1">
+            <p className="text-[12px] text-muted-foreground font-game uppercase">
               Polymarket × AI Racing
             </p>
           </div>
         </motion.div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           <a
             href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-pixel text-muted-foreground hover:text-retro-cyan transition-colors uppercase tracking-widest"
           >
-            Active Races
+            RACES
           </a>
           <a
             href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-pixel text-muted-foreground hover:text-retro-purple transition-colors uppercase tracking-widest"
           >
-            Leaderboard
+            LEADERBOARD
           </a>
           <a
             href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-pixel text-muted-foreground hover:text-retro-orange transition-colors uppercase tracking-widest"
           >
-            History
+            HISTORY
           </a>
         </nav>
 
@@ -81,10 +80,13 @@ export const Header = ({
             <div className="relative">
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border/50"
+                className="flex items-center gap-2 px-3 py-2 bg-retro-purple/10 hover:bg-retro-purple/20 transition-colors border border-retro-purple/50 font-game text-base rounded-none"
               >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-neon-cyan to-neon-magenta" />
-                <span className="font-mono text-sm">
+                <div
+                  className="w-5 h-5 bg-gradient-to-br from-retro-cyan to-retro-orange rounded-none"
+                  style={{ imageRendering: "pixelated" }}
+                />
+                <span className="font-game text-base text-white">
                   {formatAddress(walletAddress!)}
                 </span>
                 <ChevronDown className="w-4 h-4 text-muted-foreground" />
@@ -93,15 +95,14 @@ export const Header = ({
           ) : (
             <motion.button
               onClick={onConnect}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-bold text-sm bg-gradient-to-r from-neon-cyan to-neon-magenta text-background"
+              className="pixel-button flex items-center gap-2 px-6 py-2 font-pixel text-[10px] bg-white text-black border-2 border-white hover:bg-retro-cyan hover:border-retro-cyan hover:text-black transition-colors rounded-none"
               whileHover={{
                 scale: 1.02,
-                boxShadow: "0 0 20px hsl(var(--neon-cyan) / 0.5)",
               }}
               whileTap={{ scale: 0.98 }}
             >
               <Wallet className="w-4 h-4" />
-              Connect Wallet
+              CONNECT WALLET
             </motion.button>
           )}
         </motion.div>
