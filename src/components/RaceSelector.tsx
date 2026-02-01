@@ -39,7 +39,7 @@ export const RaceSelector = ({
         HOT RACES
       </h3>
 
-      <div className="space-y-2 flex-col overflow-y-auto custom-scrollbar">
+      <div className="space-y-2 flex-col overflow-y-auto overflow-x-hidden custom-scrollbar">
         {races.map((race) => (
           <motion.button
             key={race.id}
