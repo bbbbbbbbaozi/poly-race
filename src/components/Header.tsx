@@ -82,10 +82,14 @@ export const Header = ({
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="flex items-center gap-2 px-3 py-2 bg-retro-purple/10 hover:bg-retro-purple/20 transition-colors border border-retro-purple/50 font-game text-base rounded-none"
               >
-                <div
-                  className="w-5 h-5 bg-gradient-to-br from-retro-cyan to-retro-orange rounded-none"
-                  style={{ imageRendering: "pixelated" }}
-                />
+                <div className="w-5 h-5 overflow-hidden border border-white/20">
+                  <img
+                    src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${walletAddress}`}
+                    alt="avatar"
+                    className="w-full h-full object-cover"
+                    style={{ imageRendering: "pixelated" }}
+                  />
+                </div>
                 <span className="font-game text-base text-white">
                   {formatAddress(walletAddress!)}
                 </span>
